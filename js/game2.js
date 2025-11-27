@@ -173,7 +173,7 @@ function setupCandles() {
     
     candleButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            if (candleCount >= 10) return; // 最多10根蠟燭
+            if (candleCount >= 3) return; // 最多3根蠟燭
             
             const color = btn.dataset.candle;
             
@@ -181,22 +181,36 @@ function setupCandles() {
             const candle = document.createElement('div');
             candle.className = `candle ${candleColors[color]}`;
             
-            // 位置（排列在蛋糕頂部）
-            const spacing = 25;
-            const startX = 120 - (candleCount * spacing / 2);
-            candle.style.left = (startX + candleCount * spacing) + 'px';
-            candle.style.top = '60px';
-            
             candlesLayer.appendChild(candle);
-            
             candleCount++;
+            
+            // 置中排列蠟燭的位置
+            const positions = {
+                1: [145],                  // 1根蠟燭置中
+                2: [125, 165],             // 2根蠟燭
+                3: [105, 145, 185]         // 3根蠟燭
+            };
+            
+            // 重新排列所有蠟燭
+            const candleElements = candlesLayer.querySelectorAll('.candle');
+            const currentPositions = positions[candleCount];
+            candleElements.forEach((c, i) => {
+                c.style.left = currentPositions[i] + 'px';
+                c.style.top = '50px';
+            });
+            
             candleNumDisplay.textContent = candleCount;
             
-            // 儲存蠟燭資訊
-            gameState.cake.candles.push({
-                color: color,
-                x: parseInt(candle.style.left),
-                y: parseInt(candle.style.top)
+            // 更新儲存的蠟燭資訊（清空並重建）
+            gameState.cake.candles = [];
+            candleElements.forEach((c, i) => {
+                const candleColor = c.classList.contains('pink') ? 'pink' : 
+                                   c.classList.contains('blue') ? 'blue' : 'yellow';
+                gameState.cake.candles.push({
+                    color: candleColor,
+                    x: currentPositions[i],
+                    y: 50
+                });
             });
         });
     });
@@ -227,15 +241,13 @@ function setupFinishButton() {
     const finishBtn = document.getElementById('finish-decorate-btn');
     
     finishBtn.addEventListener('click', () => {
-        // 確保至少有蠟燭
+        // 確保至少有1根蠟燭
         if (candleCount === 0) {
-            // 自動添加預設蠟燭
+            // 自動添加1根預設蠟燭
             gameState.cake.candles = [
-                { color: 'pink', x: 120, y: 60 },
-                { color: 'blue', x: 145, y: 60 },
-                { color: 'yellow', x: 170, y: 60 }
+                { color: 'pink', x: 120, y: 50 }
             ];
-            candleCount = 3;
+            candleCount = 1;
         }
         
         showScreen('game3');

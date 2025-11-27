@@ -187,7 +187,7 @@ function showGiftScreen(data) {
     // 設定蛋糕
     const giftCake = document.getElementById('gift-cake-display');
     gameState.cake = data.cake;
-    applyCakeStyle(giftCake);
+    applyCakeStyle(giftCake, 'gift');
     
     // 設定祝福
     const giftBlessings = document.getElementById('gift-blessings');
@@ -327,7 +327,7 @@ function showEndScreen() {
     
     // 顯示最終蛋糕
     const finalCake = document.getElementById('final-cake-card');
-    applyCakeStyle(finalCake);
+    applyCakeStyle(finalCake, 'final');
     
     // 如果是朋友模式，顯示分享區塊
     if (gameState.mode === 'friend') {
@@ -343,9 +343,9 @@ function showEndScreen() {
     createConfetti();
 }
 
-// 套用蛋糕樣式
-function applyCakeStyle(element) {
-    const { shape, flavor, creamColor } = gameState.cake;
+// 套用蛋糕樣式（完整版，包含裝飾品和蠟燭）
+function applyCakeStyle(element, type = 'final') {
+    const { shape, flavor, creamColor, decorations, candles, message } = gameState.cake;
     
     // 口味顏色
     const flavorColors = {
@@ -365,11 +365,52 @@ function applyCakeStyle(element) {
         element.style.transform = 'rotate(-45deg)';
     } else {
         element.style.borderRadius = '20px 20px 10px 10px';
+        element.style.transform = 'none';
     }
     
     // 奶油顏色覆蓋層
     if (creamColor) {
         element.style.boxShadow = `inset 0 30px 0 ${creamColor}, 0 10px 30px rgba(0,0,0,0.2)`;
+    }
+    
+    // 渲染裝飾品
+    const prefix = type === 'gift' ? '.gift' : '.final';
+    const decorationsLayer = element.querySelector(`${prefix}-decorations-layer`);
+    if (decorationsLayer && decorations && decorations.length > 0) {
+        decorationsLayer.innerHTML = '';
+        decorations.forEach(deco => {
+            const decoItem = document.createElement('div');
+            decoItem.className = 'decoration-item';
+            decoItem.textContent = deco.type;
+            // 調整位置比例（從裝飾畫面的300x300縮放到200x130）
+            decoItem.style.left = (deco.x * 0.67) + 'px';
+            decoItem.style.top = (deco.y * 0.43) + 'px';
+            decorationsLayer.appendChild(decoItem);
+        });
+    }
+    
+    // 渲染蠟燭
+    const candlesLayer = element.querySelector(`${prefix}-candles-layer`);
+    if (candlesLayer && candles && candles.length > 0) {
+        candlesLayer.innerHTML = '';
+        // 重新計算蠟燭位置（置中排列）
+        const spacing = 30;
+        const totalWidth = (candles.length - 1) * spacing;
+        const startX = (200 - totalWidth) / 2 - 4; // 4是蠟燭寬度的一半
+        
+        candles.forEach((candleData, index) => {
+            const candle = document.createElement('div');
+            candle.className = `candle ${candleData.color}`;
+            candle.style.left = (startX + index * spacing) + 'px';
+            candle.style.top = '10px';
+            candlesLayer.appendChild(candle);
+        });
+    }
+    
+    // 渲染祝福文字
+    const messageLayer = element.querySelector(`${prefix}-message-layer`);
+    if (messageLayer && message) {
+        messageLayer.textContent = message;
     }
 }
 

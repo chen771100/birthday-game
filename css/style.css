@@ -1152,14 +1152,72 @@ body {
     margin-bottom: 30px;
 }
 
+/* 最終蛋糕包裝容器 */
+.final-cake-wrapper {
+    width: 250px;
+    height: 200px;
+    margin: 0 auto 30px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #final-cake-card {
     width: 200px;
     height: 130px;
-    margin: 0 auto 30px;
     background: #F5DEB3;
     border-radius: 20px 20px 10px 10px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     position: relative;
+}
+
+.final-decorations-layer,
+.final-candles-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.final-decorations-layer .decoration-item {
+    position: absolute;
+    font-size: 20px;
+}
+
+.final-candles-layer .candle {
+    position: absolute;
+    width: 8px;
+    height: 35px;
+    border-radius: 3px;
+}
+
+.final-candles-layer .candle::after {
+    content: '🔥';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    animation: flicker 0.3s infinite alternate;
+}
+
+.final-candles-layer .candle.pink { background: linear-gradient(to bottom, #FFB6C1, #FF69B4); }
+.final-candles-layer .candle.blue { background: linear-gradient(to bottom, #87CEEB, #4169E1); }
+.final-candles-layer .candle.yellow { background: linear-gradient(to bottom, #FFD700, #FFA500); }
+
+.final-message-layer {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--secondary-color);
+    text-shadow: 1px 1px 2px white;
+    white-space: nowrap;
 }
 
 .wish-display {
@@ -1330,13 +1388,72 @@ body {
     margin-bottom: 25px;
 }
 
+/* 收禮蛋糕包裝容器 */
+.gift-cake-wrapper {
+    width: 250px;
+    height: 200px;
+    margin: 0 auto 25px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #gift-cake-display {
     width: 200px;
     height: 130px;
-    margin: 0 auto 25px;
     background: #F5DEB3;
     border-radius: 20px 20px 10px 10px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.gift-decorations-layer,
+.gift-candles-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.gift-decorations-layer .decoration-item {
+    position: absolute;
+    font-size: 20px;
+}
+
+.gift-candles-layer .candle {
+    position: absolute;
+    width: 8px;
+    height: 35px;
+    border-radius: 3px;
+}
+
+.gift-candles-layer .candle::after {
+    content: '🔥';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    animation: flicker 0.3s infinite alternate;
+}
+
+.gift-candles-layer .candle.pink { background: linear-gradient(to bottom, #FFB6C1, #FF69B4); }
+.gift-candles-layer .candle.blue { background: linear-gradient(to bottom, #87CEEB, #4169E1); }
+.gift-candles-layer .candle.yellow { background: linear-gradient(to bottom, #FFD700, #FFA500); }
+
+.gift-message-layer {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--secondary-color);
+    text-shadow: 1px 1px 2px white;
+    white-space: nowrap;
 }
 
 .gift-message-box {
