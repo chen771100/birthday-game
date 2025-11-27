@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 生日快樂遊戲</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 歡迎頁面 -->
+        <section id="welcome-screen" class="screen active">
+            <div class="welcome-container">
+                <div class="floating-decorations">
+                    <span class="decoration">🎈</span>
+                    <span class="decoration">🎉</span>
+                    <span class="decoration">🎊</span>
+                    <span class="decoration">⭐</span>
+                    <span class="decoration">🎁</span>
+                </div>
+                <h1 class="title">🎂 生日快樂遊戲 🎂</h1>
+                <p class="subtitle">選擇你想要的模式開始慶祝！</p>
+                
+                <!-- 模式選擇 -->
+                <div class="mode-selection">
+                    <button class="mode-btn" data-mode="self">
+                        <span class="mode-icon">🎂</span>
+                        <span class="mode-text">我自己生日</span>
+                        <span class="mode-desc">為自己慶祝</span>
+                    </button>
+                    <button class="mode-btn" data-mode="friend">
+                        <span class="mode-icon">🎁</span>
+                        <span class="mode-text">幫朋友慶生</span>
+                        <span class="mode-desc">製作祝福送給對方</span>
+                    </button>
+                </div>
+
+                <!-- 輸入區（根據模式顯示不同內容） -->
+                <div id="input-section" class="hidden">
+                    <div class="input-group">
+                        <label for="birthday-name" id="name-label">請輸入壽星的名字：</label>
+                        <input type="text" id="birthday-name" placeholder="輸入名字..." maxlength="20">
+                    </div>
+                    <div id="sender-input" class="input-group hidden">
+                        <label for="sender-name">你的名字（送禮人）：</label>
+                        <input type="text" id="sender-name" placeholder="輸入你的名字..." maxlength="20">
+                    </div>
+                    <button id="start-btn" class="btn btn-primary">開始慶祝 🎉</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 關卡一：製作蛋糕 -->
+        <section id="game1-screen" class="screen">
+            <div class="game-header">
+                <h2>關卡 1：製作蛋糕 🍰</h2>
+                <p class="player-name"></p>
+            </div>
+            <div class="game-container">
+                <div id="cake-making">
+                    <!-- 步驟一：選擇形狀 -->
+                    <div id="step1" class="making-step active">
+                        <h3>選擇蛋糕形狀</h3>
+                        <div class="options shape-options">
+                            <button class="option-btn" data-shape="circle">
+                                <div class="shape-preview circle"></div>
+                                <span>圓形</span>
+                            </button>
+                            <button class="option-btn" data-shape="square">
+                                <div class="shape-preview square"></div>
+                                <span>方形</span>
+                            </button>
+                            <button class="option-btn" data-shape="heart">
+                                <div class="shape-preview heart"></div>
+                                <span>愛心</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 步驟二：選擇口味 -->
+                    <div id="step2" class="making-step">
+                        <h3>選擇蛋糕口味</h3>
+                        <div class="options flavor-options">
+                            <button class="option-btn" data-flavor="chocolate">
+                                <div class="flavor-preview chocolate">🍫</div>
+                                <span>巧克力</span>
+                            </button>
+                            <button class="option-btn" data-flavor="strawberry">
+                                <div class="flavor-preview strawberry">🍓</div>
+                                <span>草莓</span>
+                            </button>
+                            <button class="option-btn" data-flavor="vanilla">
+                                <div class="flavor-preview vanilla">🍦</div>
+                                <span>香草</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 步驟三：攪拌麵糊 -->
+                    <div id="step3" class="making-step">
+                        <h3>攪拌麵糊</h3>
+                        <p class="instruction">在碗中快速畫圓攪拌！</p>
+                        <div id="mixing-bowl">
+                            <div class="bowl">
+                                <div class="batter"></div>
+                                <div class="spoon">🥄</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="mix-progress"></div>
+                            </div>
+                            <p class="progress-text"><span id="mix-percent">0</span>%</p>
+                        </div>
+                    </div>
+
+                    <!-- 步驟四：烘烤 -->
+                    <div id="step4" class="making-step">
+                        <h3>放入烤箱烘烤</h3>
+                        <div id="oven-container">
+                            <div class="oven">
+                                <div class="oven-window">
+                                    <div class="cake-in-oven"></div>
+                                </div>
+                                <div class="oven-light"></div>
+                            </div>
+                            <button id="bake-btn" class="btn btn-secondary">開始烘烤 🔥</button>
+                            <div class="timer" id="bake-timer">
+                                <span id="timer-display">00:05</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 完成 -->
+                    <div id="step5" class="making-step">
+                        <h3>蛋糕完成了！🎉</h3>
+                        <div id="finished-cake-preview"></div>
+                        <button id="to-decorate-btn" class="btn btn-primary">開始裝飾 ➡️</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 關卡二：裝飾蛋糕 -->
+        <section id="game2-screen" class="screen">
+            <div class="game-header">
+                <h2>關卡 2：裝飾蛋糕 🎨</h2>
+                <p class="player-name"></p>
+            </div>
+            <div class="game-container decorate-container">
+                <div class="decorate-area">
+                    <div id="cake-canvas">
+                        <div id="decorating-cake"></div>
+                        <div id="decorations-layer"></div>
+                        <div id="candles-layer"></div>
+                        <div id="message-layer"></div>
+                    </div>
+                </div>
+                <div class="tools-panel">
+                    <div class="tool-section">
+                        <h4>奶油顏色</h4>
+                        <div class="cream-colors">
+                            <button class="cream-btn active" data-cream="#FFB6C1" style="background:#FFB6C1"></button>
+                            <button class="cream-btn" data-cream="#FFFFFF" style="background:#FFFFFF"></button>
+                            <button class="cream-btn" data-cream="#87CEEB" style="background:#87CEEB"></button>
+                            <button class="cream-btn" data-cream="#FFD700" style="background:#FFD700"></button>
+                            <button class="cream-btn" data-cream="#98FB98" style="background:#98FB98"></button>
+                            <button class="cream-btn" data-cream="#DDA0DD" style="background:#DDA0DD"></button>
+                        </div>
+                        <button id="apply-cream-btn" class="btn btn-small">塗抹奶油</button>
+                    </div>
+                    <div class="tool-section">
+                        <h4>裝飾品</h4>
+                        <div class="decorations-items">
+                            <button class="deco-btn" data-deco="🍓">🍓</button>
+                            <button class="deco-btn" data-deco="🫐">🫐</button>
+                            <button class="deco-btn" data-deco="🍒">🍒</button>
+                            <button class="deco-btn" data-deco="⭐">⭐</button>
+                            <button class="deco-btn" data-deco="💖">💖</button>
+                            <button class="deco-btn" data-deco="🌸">🌸</button>
+                            <button class="deco-btn" data-deco="✨">✨</button>
+                            <button class="deco-btn" data-deco="🎀">🎀</button>
+                        </div>
+                    </div>
+                    <div class="tool-section">
+                        <h4>蠟燭</h4>
+                        <div class="candle-options">
+                            <button class="candle-btn" data-candle="pink">🕯️</button>
+                            <button class="candle-btn" data-candle="blue">🕯️</button>
+                            <button class="candle-btn" data-candle="yellow">🕯️</button>
+                        </div>
+                        <p class="candle-count">蠟燭數量：<span id="candle-num">0</span></p>
+                    </div>
+                    <div class="tool-section">
+                        <h4>祝福文字</h4>
+                        <input type="text" id="cake-message" placeholder="生日快樂！" maxlength="15">
+                        <button id="add-message-btn" class="btn btn-small">加入文字</button>
+                    </div>
+                    <button id="finish-decorate-btn" class="btn btn-primary">完成裝飾 ✨</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 關卡三：吹蠟燭 -->
+        <section id="game3-screen" class="screen">
+            <div class="game-header">
+                <h2>關卡 3：吹蠟燭 🕯️</h2>
+                <p class="player-name"></p>
+            </div>
+            <div class="game-container">
+                <p class="instruction">快速點擊螢幕吹熄蠟燭！</p>
+                <div id="blow-area">
+                    <div id="final-cake-display"></div>
+                    <div id="candles-container"></div>
+                </div>
+                <div class="blow-indicator">
+                    <div class="blow-power">
+                        <span>吹氣力道：</span>
+                        <div class="power-bar">
+                            <div class="power-fill" id="blow-power-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="blow-hint">點擊畫面吹氣！</div>
+            </div>
+        </section>
+
+        <!-- 關卡四：氣球遊戲 -->
+        <section id="game4-screen" class="screen">
+            <div class="game-header">
+                <h2>關卡 4：收集祝福氣球 🎈</h2>
+                <p class="player-name"></p>
+            </div>
+            <div class="game-container">
+                <div class="game-stats">
+                    <div class="stat">
+                        <span>時間：</span>
+                        <span id="balloon-timer">30</span>秒
+                    </div>
+                    <div class="stat">
+                        <span>收集：</span>
+                        <span id="balloon-count">0</span> / 10
+                    </div>
+                </div>
+                <div id="balloon-area"></div>
+                <div id="blessing-popup" class="hidden">
+                    <p id="blessing-text"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 關卡五：許願星 -->
+        <section id="game5-screen" class="screen">
+            <div class="game-header">
+                <h2>關卡 5：許下生日願望 ⭐</h2>
+                <p class="player-name"></p>
+            </div>
+            <div class="game-container wish-container">
+                <div id="sky-area">
+                    <div id="wish-pool">
+                        <div class="pool-glow"></div>
+                        <span>許願池</span>
+                    </div>
+                    <div id="stars-container"></div>
+                </div>
+                <div class="wish-progress">
+                    <p>收集許願星：<span id="star-count">0</span> / 3</p>
+                    <div class="stars-display">
+                        <span class="star-slot">☆</span>
+                        <span class="star-slot">☆</span>
+                        <span class="star-slot">☆</span>
+                    </div>
+                </div>
+                <div id="wish-input-area" class="hidden">
+                    <h3>寫下你的生日願望 ✨</h3>
+                    <textarea id="wish-text" placeholder="我希望..."></textarea>
+                    <button id="submit-wish-btn" class="btn btn-primary">許願 🌟</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 結束畫面 -->
+        <section id="end-screen" class="screen">
+            <div id="confetti-container"></div>
+            <div class="end-container">
+                <h1 class="end-title">🎉 生日快樂 🎉</h1>
+                <h2 class="birthday-person"></h2>
+                <p class="from-sender hidden"></p>
+                <div id="final-cake-card"></div>
+                <div class="wish-display">
+                    <p>你的生日願望：</p>
+                    <p id="final-wish" class="wish-text"></p>
+                </div>
+                <div class="blessings-collected">
+                    <h3>收集到的祝福：</h3>
+                    <div id="all-blessings"></div>
+                </div>
+                
+                <!-- 分享區塊（僅朋友模式顯示） -->
+                <div id="share-section" class="hidden">
+                    <h3>🎁 分享給壽星</h3>
+                    <p class="share-desc">複製連結，讓壽星收到你的祝福！</p>
+                    <div class="share-link-box">
+                        <input type="text" id="share-link" readonly>
+                        <button id="copy-link-btn" class="btn btn-small">複製連結</button>
+                    </div>
+                    <p id="copy-success" class="hidden">✅ 已複製到剪貼簿！</p>
+                    <div class="share-buttons">
+                        <button id="share-line-btn" class="btn btn-share btn-line">LINE 分享</button>
+                        <button id="share-fb-btn" class="btn btn-share btn-fb">Facebook</button>
+                    </div>
+                </div>
+                
+                <button id="replay-btn" class="btn btn-primary">再玩一次 🔄</button>
+            </div>
+        </section>
+
+        <!-- 收禮畫面（朋友開啟連結時顯示） -->
+        <section id="gift-screen" class="screen">
+            <div id="gift-confetti-container"></div>
+            <div class="gift-container">
+                <h1 class="gift-title">🎉 你收到一份生日祝福！🎉</h1>
+                <h2 class="gift-recipient"></h2>
+                <p class="gift-sender"></p>
+                <div id="gift-cake-display"></div>
+                <div class="gift-message-box">
+                    <h3>💌 送給你的祝福</h3>
+                    <div id="gift-blessings"></div>
+                </div>
+                <div class="gift-wish-box">
+                    <p>🌟 他們為你許下的願望：</p>
+                    <p id="gift-wish" class="wish-text"></p>
+                </div>
+                <button id="create-own-btn" class="btn btn-primary">我也要製作生日祝福 🎂</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/game1.js"></script>
+    <script src="js/game2.js"></script>
+    <script src="js/game3.js"></script>
+    <script src="js/game4.js"></script>
+    <script src="js/game5.js"></script>
+</body>
+</html>

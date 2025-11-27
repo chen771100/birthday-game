@@ -1,0 +1,1476 @@
+/* ========================================
+   生日遊戲 - 主要樣式表
+   ======================================== */
+
+/* CSS 變數 */
+:root {
+    --primary-color: #FF6B9D;
+    --secondary-color: #C44569;
+    --accent-color: #FFD93D;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --text-color: #333;
+    --text-light: #666;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    --border-radius: 20px;
+}
+
+/* 基礎重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+#app {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* 螢幕/場景 */
+.screen {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================================
+   歡迎頁面
+   ======================================== */
+.welcome-container {
+    background: var(--card-bg);
+    padding: 50px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    max-width: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+.floating-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.decoration {
+    position: absolute;
+    font-size: 30px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.decoration:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+.decoration:nth-child(2) { top: 20%; right: 10%; animation-delay: 0.5s; }
+.decoration:nth-child(3) { bottom: 20%; left: 15%; animation-delay: 1s; }
+.decoration:nth-child(4) { top: 15%; right: 20%; animation-delay: 1.5s; }
+.decoration:nth-child(5) { bottom: 15%; right: 15%; animation-delay: 2s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(10deg); }
+}
+
+.title {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.subtitle {
+    color: var(--text-light);
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+/* 模式選擇 */
+.mode-selection {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.mode-btn {
+    background: white;
+    border: 3px solid #eee;
+    border-radius: 15px;
+    padding: 25px 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 150px;
+}
+
+.mode-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.2);
+}
+
+.mode-btn.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #fff5f7, #ffe0e8);
+}
+
+.mode-icon {
+    font-size: 2.5em;
+}
+
+.mode-text {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.mode-desc {
+    font-size: 0.85em;
+    color: var(--text-light);
+}
+
+#input-section {
+    animation: fadeIn 0.3s ease;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    border: 2px solid #eee;
+    border-radius: 50px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+}
+
+/* 按鈕樣式 */
+.btn {
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 5px 20px rgba(255, 107, 157, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-small {
+    padding: 10px 20px;
+    font-size: 0.9em;
+}
+
+/* ========================================
+   遊戲通用樣式
+   ======================================== */
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-header h2 {
+    color: white;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 10px;
+}
+
+.player-name {
+    color: var(--accent-color);
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.game-container {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    max-width: 800px;
+    width: 100%;
+}
+
+.instruction {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+/* ========================================
+   關卡一：製作蛋糕
+   ======================================== */
+.making-step {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.making-step.active {
+    display: block;
+}
+
+.making-step h3 {
+    color: var(--primary-color);
+    font-size: 1.5em;
+    margin-bottom: 25px;
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.option-btn {
+    background: white;
+    border: 3px solid #eee;
+    border-radius: 15px;
+    padding: 20px 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.option-btn:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.option-btn.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #fff5f7, #ffe0e8);
+}
+
+/* 形狀預覽 */
+.shape-preview {
+    width: 60px;
+    height: 60px;
+    background: #F5DEB3;
+    box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1);
+}
+
+.shape-preview.circle {
+    border-radius: 50%;
+}
+
+.shape-preview.square {
+    border-radius: 10px;
+}
+
+.shape-preview.heart {
+    background: none;
+    position: relative;
+}
+
+.shape-preview.heart::before,
+.shape-preview.heart::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 50px;
+    background: #F5DEB3;
+    border-radius: 30px 30px 0 0;
+}
+
+.shape-preview.heart::before {
+    left: 30px;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+}
+
+.shape-preview.heart::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+}
+
+/* 口味預覽 */
+.flavor-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+}
+
+.flavor-preview.chocolate { background: #8B4513; }
+.flavor-preview.strawberry { background: #FFB6C1; }
+.flavor-preview.vanilla { background: #FFF8DC; }
+
+/* 攪拌碗 */
+#mixing-bowl {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.bowl {
+    width: 200px;
+    height: 150px;
+    background: linear-gradient(to bottom, #ddd, #bbb);
+    border-radius: 0 0 100px 100px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+}
+
+.batter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: #F5DEB3;
+    transition: all 0.3s;
+}
+
+.spoon {
+    position: absolute;
+    font-size: 50px;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.1s;
+}
+
+.bowl.mixing .spoon {
+    animation: stir 0.3s ease infinite;
+}
+
+@keyframes stir {
+    0%, 100% { transform: translateX(-50%) rotate(-20deg); }
+    50% { transform: translateX(-50%) rotate(20deg); }
+}
+
+.progress-bar {
+    width: 250px;
+    height: 20px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    width: 0%;
+    transition: width 0.2s;
+}
+
+.progress-text {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* 烤箱 */
+#oven-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.oven {
+    width: 250px;
+    height: 200px;
+    background: linear-gradient(to bottom, #555, #333);
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+}
+
+.oven-window {
+    width: 100%;
+    height: 120px;
+    background: #222;
+    border-radius: 10px;
+    border: 4px solid #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cake-in-oven {
+    width: 80px;
+    height: 40px;
+    background: #F5DEB3;
+    border-radius: 10px 10px 5px 5px;
+    transition: all 1s;
+}
+
+.oven.baking .cake-in-oven {
+    height: 60px;
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+}
+
+.oven-light {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #666;
+}
+
+.oven.baking .oven-light {
+    background: #ff6b00;
+    box-shadow: 0 0 10px #ff6b00;
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.5; }
+}
+
+.timer {
+    display: none;
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.timer.active {
+    display: block;
+}
+
+/* 完成蛋糕預覽 */
+#finished-cake-preview {
+    width: 150px;
+    height: 100px;
+    margin: 20px auto;
+    background: #F5DEB3;
+    border-radius: 20px 20px 10px 10px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* ========================================
+   關卡二：裝飾蛋糕
+   ======================================== */
+.decorate-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.decorate-area {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cake-canvas {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#decorating-cake {
+    width: 200px;
+    height: 120px;
+    background: #F5DEB3;
+    border-radius: 20px 20px 10px 10px;
+    position: relative;
+    transition: all 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#decorating-cake.circle { border-radius: 50% 50% 20px 20px; }
+#decorating-cake.heart {
+    width: 180px;
+    height: 160px;
+    background: #F5DEB3;
+    transform: rotate(-45deg);
+    border-radius: 20px;
+}
+
+#decorating-cake::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    border-radius: 20px 20px 0 0;
+    background: inherit;
+    filter: brightness(1.1);
+}
+
+#decorations-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.decoration-item {
+    position: absolute;
+    font-size: 24px;
+    cursor: move;
+    pointer-events: auto;
+    user-select: none;
+    transition: transform 0.1s;
+}
+
+.decoration-item:hover {
+    transform: scale(1.2);
+}
+
+#candles-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.candle {
+    position: absolute;
+    width: 10px;
+    height: 40px;
+    border-radius: 3px;
+    pointer-events: auto;
+}
+
+.candle::after {
+    content: '🔥';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    animation: flicker 0.3s infinite alternate;
+}
+
+@keyframes flicker {
+    from { transform: translateX(-50%) scale(1); }
+    to { transform: translateX(-50%) scale(1.1); }
+}
+
+.candle.pink { background: linear-gradient(to bottom, #FFB6C1, #FF69B4); }
+.candle.blue { background: linear-gradient(to bottom, #87CEEB, #4169E1); }
+.candle.yellow { background: linear-gradient(to bottom, #FFD700, #FFA500); }
+
+#message-layer {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--secondary-color);
+    text-shadow: 1px 1px 2px white;
+    white-space: nowrap;
+}
+
+.tools-panel {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tool-section {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.tool-section h4 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.cream-colors {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.cream-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cream-btn:hover, .cream-btn.active {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.decorations-items, .candle-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.deco-btn, .candle-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.deco-btn:hover, .candle-btn:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.candle-btn:nth-child(1) { color: #FF69B4; }
+.candle-btn:nth-child(2) { color: #4169E1; }
+.candle-btn:nth-child(3) { color: #FFA500; }
+
+.candle-count {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: var(--text-light);
+}
+
+.tool-section input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+/* ========================================
+   關卡三：吹蠟燭
+   ======================================== */
+#blow-area {
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+#final-cake-display {
+    width: 220px;
+    height: 140px;
+    background: #F5DEB3;
+    border-radius: 20px 20px 10px 10px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#candles-container {
+    position: absolute;
+    top: 50px;
+    display: flex;
+    gap: 15px;
+}
+
+.blow-candle {
+    width: 12px;
+    height: 45px;
+    background: linear-gradient(to bottom, #FFB6C1, #FF69B4);
+    border-radius: 3px;
+    position: relative;
+}
+
+.blow-candle .flame {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    transition: all 0.3s;
+    animation: flicker 0.2s infinite alternate;
+}
+
+.blow-candle.blown .flame {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px) scale(0);
+}
+
+.blow-candle .smoke {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    opacity: 0;
+}
+
+.blow-candle.blown .smoke {
+    animation: smokeRise 1s ease forwards;
+}
+
+@keyframes smokeRise {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+}
+
+.blow-indicator {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.blow-power {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.power-bar {
+    flex: 1;
+    height: 20px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.power-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #87CEEB, #4169E1);
+    width: 0%;
+    transition: width 0.1s;
+}
+
+#blow-hint {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: var(--primary-color);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ========================================
+   關卡四：氣球遊戲
+   ======================================== */
+.game-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.stat span:last-child {
+    color: var(--primary-color);
+}
+
+#balloon-area {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #e0f7ff, #fff);
+    border-radius: 15px;
+}
+
+.balloon {
+    position: absolute;
+    font-size: 50px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    animation: floatUp linear forwards;
+    user-select: none;
+}
+
+.balloon:hover {
+    transform: scale(1.2);
+}
+
+@keyframes floatUp {
+    from { 
+        transform: translateY(100%) rotate(0deg); 
+    }
+    to { 
+        transform: translateY(-150%) rotate(10deg); 
+    }
+}
+
+.balloon.popped {
+    animation: pop 0.3s ease forwards;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+#blessing-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    z-index: 100;
+    animation: popIn 0.3s ease;
+}
+
+#blessing-popup.hidden {
+    display: none;
+}
+
+@keyframes popIn {
+    from { transform: translate(-50%, -50%) scale(0); }
+    to { transform: translate(-50%, -50%) scale(1); }
+}
+
+#blessing-text {
+    font-size: 1.5em;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+/* ========================================
+   關卡五：許願星
+   ======================================== */
+.wish-container {
+    position: relative;
+}
+
+#sky-area {
+    width: 100%;
+    height: 350px;
+    background: linear-gradient(to bottom, #0a0a2e, #1a1a4e, #2a2a6e);
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+#sky-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+}
+
+#wish-pool {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 80px;
+    background: radial-gradient(ellipse, #4a90d9, #1e5799);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    box-shadow: 0 0 30px rgba(74, 144, 217, 0.5);
+}
+
+.pool-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.3), transparent);
+    border-radius: 50%;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+#stars-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.shooting-star {
+    position: absolute;
+    font-size: 30px;
+    cursor: grab;
+    user-select: none;
+    filter: drop-shadow(0 0 10px gold);
+    animation: twinkle 1s infinite alternate;
+}
+
+.shooting-star:active {
+    cursor: grabbing;
+}
+
+.shooting-star::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(to left, gold, transparent);
+    transform: translateY(-50%);
+}
+
+@keyframes twinkle {
+    from { filter: drop-shadow(0 0 5px gold); }
+    to { filter: drop-shadow(0 0 15px gold); }
+}
+
+.wish-progress {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.wish-progress p {
+    font-size: 1.2em;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.stars-display {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.star-slot {
+    font-size: 2em;
+    color: #ddd;
+    transition: all 0.3s;
+}
+
+.star-slot.collected {
+    color: gold;
+    text-shadow: 0 0 10px gold;
+    animation: starCollected 0.5s ease;
+}
+
+@keyframes starCollected {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+}
+
+#wish-input-area {
+    margin-top: 30px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+#wish-input-area.hidden {
+    display: none;
+}
+
+#wish-input-area h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+#wish-text {
+    width: 100%;
+    max-width: 400px;
+    height: 100px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    font-size: 1.1em;
+    resize: none;
+    margin-bottom: 15px;
+}
+
+#wish-text:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* ========================================
+   結束畫面
+   ======================================== */
+#end-screen {
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    position: relative;
+}
+
+#confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    0% { 
+        transform: translateY(-100%) rotate(0deg); 
+        opacity: 1;
+    }
+    100% { 
+        transform: translateY(100vh) rotate(720deg); 
+        opacity: 0;
+    }
+}
+
+.end-container {
+    background: var(--card-bg);
+    padding: 50px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    max-width: 600px;
+    z-index: 20;
+    animation: fadeIn 1s ease;
+}
+
+.end-title {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.birthday-person {
+    font-size: 2em;
+    color: var(--secondary-color);
+    margin-bottom: 30px;
+}
+
+#final-cake-card {
+    width: 200px;
+    height: 130px;
+    margin: 0 auto 30px;
+    background: #F5DEB3;
+    border-radius: 20px 20px 10px 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.wish-display {
+    background: linear-gradient(135deg, #fff5f7, #ffe0e8);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.wish-display p:first-child {
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+.wish-text {
+    font-size: 1.3em;
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.blessings-collected {
+    margin-bottom: 30px;
+}
+
+.blessings-collected h3 {
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+#all-blessings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.blessing-tag {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+/* ========================================
+   分享區塊
+   ======================================== */
+.from-sender {
+    color: var(--text-light);
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+#share-section {
+    background: linear-gradient(135deg, #e8f4f8, #d4e9f7);
+    padding: 25px;
+    border-radius: 15px;
+    margin: 20px 0;
+}
+
+#share-section h3 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.share-desc {
+    color: var(--text-light);
+    font-size: 0.95em;
+    margin-bottom: 15px;
+}
+
+.share-link-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.share-link-box input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 0.9em;
+    background: white;
+}
+
+#copy-success {
+    color: #28a745;
+    font-weight: 600;
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-share {
+    padding: 12px 25px;
+    font-size: 1em;
+    border-radius: 10px;
+}
+
+.btn-line {
+    background: #00B900;
+    color: white;
+}
+
+.btn-line:hover {
+    background: #009900;
+}
+
+.btn-fb {
+    background: #1877F2;
+    color: white;
+}
+
+.btn-fb:hover {
+    background: #0d65d9;
+}
+
+/* ========================================
+   收禮畫面
+   ======================================== */
+#gift-screen {
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+}
+
+#gift-confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.gift-container {
+    background: var(--card-bg);
+    padding: 50px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    max-width: 600px;
+    z-index: 20;
+    animation: fadeIn 1s ease;
+}
+
+.gift-title {
+    font-size: 2em;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    animation: bounce 1s infinite;
+}
+
+.gift-recipient {
+    font-size: 2.2em;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.gift-sender {
+    color: var(--text-light);
+    font-size: 1.2em;
+    margin-bottom: 25px;
+}
+
+#gift-cake-display {
+    width: 200px;
+    height: 130px;
+    margin: 0 auto 25px;
+    background: #F5DEB3;
+    border-radius: 20px 20px 10px 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.gift-message-box {
+    background: linear-gradient(135deg, #fff5f7, #ffe0e8);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.gift-message-box h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+#gift-blessings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.gift-wish-box {
+    background: linear-gradient(135deg, #e8f0ff, #d4e4ff);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+.gift-wish-box p:first-child {
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+/* ========================================
+   響應式設計
+   ======================================== */
+@media (max-width: 768px) {
+    .welcome-container {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+
+    .title {
+        font-size: 1.8em;
+    }
+
+    .mode-selection {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mode-btn {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .game-container {
+        padding: 20px 15px;
+        margin: 0 10px;
+    }
+
+    .decorate-container {
+        flex-direction: column;
+    }
+
+    .tools-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .tool-section {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    #balloon-area {
+        height: 300px;
+    }
+
+    #sky-area {
+        height: 280px;
+    }
+
+    .end-container, .gift-container {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+
+    .end-title, .gift-title {
+        font-size: 1.8em;
+    }
+
+    .share-link-box {
+        flex-direction: column;
+    }
+
+    .share-buttons {
+        flex-direction: column;
+    }
+
+    .btn-share {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .options {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .option-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .game-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #cake-canvas {
+        width: 250px;
+        height: 250px;
+    }
+
+    #decorating-cake {
+        width: 160px;
+        height: 100px;
+    }
+}
+
+/* 隱藏類別 */
+.hidden {
+    display: none !important;
+}
