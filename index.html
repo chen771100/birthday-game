@@ -165,16 +165,25 @@
                         <button id="apply-cream-btn" class="btn btn-small">塗抹奶油</button>
                     </div>
                     <div class="tool-section">
-                        <h4>裝飾品</h4>
+                        <h4>裝飾品 <span id="deco-count" class="count-badge">0 / 15</span></h4>
+                        <div class="category-tabs">
+                            <button class="category-btn active" data-category="fruits">🍓 水果</button>
+                            <button class="category-btn" data-category="stars">⭐ 星星</button>
+                            <button class="category-btn" data-category="hearts">💖 愛心</button>
+                            <button class="category-btn" data-category="flowers">🌸 花朵</button>
+                            <button class="category-btn" data-category="misc">🎀 其他</button>
+                        </div>
                         <div class="decorations-items">
-                            <button class="deco-btn" data-deco="🍓">🍓</button>
-                            <button class="deco-btn" data-deco="🫐">🫐</button>
-                            <button class="deco-btn" data-deco="🍒">🍒</button>
-                            <button class="deco-btn" data-deco="⭐">⭐</button>
-                            <button class="deco-btn" data-deco="💖">💖</button>
-                            <button class="deco-btn" data-deco="🌸">🌸</button>
-                            <button class="deco-btn" data-deco="✨">✨</button>
-                            <button class="deco-btn" data-deco="🎀">🎀</button>
+                            <!-- 動態生成 -->
+                        </div>
+                        <div class="deco-controls">
+                            <div class="control-row">
+                                <button id="undo-btn" class="btn btn-small btn-secondary" title="撤銷 (Ctrl+Z)">↶ 撤銷</button>
+                                <button id="redo-btn" class="btn btn-small btn-secondary" title="重做 (Ctrl+Y)">↷ 重做</button>
+                            </div>
+                            <button id="clear-deco-btn" class="btn btn-small btn-danger">清除所有裝飾</button>
+                            <p class="hint-text">💡 雙擊裝飾品可移除 | Delete鍵刪除選中項</p>
+                            <p class="hint-text">🎯 選中後：+/- 縮放 | [/] 旋轉</p>
                         </div>
                     </div>
                     <div class="tool-section">
@@ -195,6 +204,7 @@
                             <button class="candle-btn" data-candle="rainbow" style="background: linear-gradient(90deg, red, orange, yellow, green, blue, purple)"></button>
                         </div>
                         <p class="candle-count">蠟燭數量：<span id="candle-num">0</span> / 3</p>
+                        <p class="hint-text">💡 點擊蠟燭可移除</p>
                     </div>
                     <div class="tool-section">
                         <h4>祝福文字</h4>
