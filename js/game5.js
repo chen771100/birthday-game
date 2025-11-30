@@ -157,6 +157,9 @@ function collectStar(star) {
     starsCollected++;
     updateStarUI();
     
+    // 播放成功音效
+    if (typeof playSfxSuccess === 'function') playSfxSuccess();
+    
     // 動畫效果
     star.style.transition = 'all 0.5s';
     star.style.transform = 'scale(2)';
@@ -176,6 +179,8 @@ function collectStar(star) {
     // 收集完成
     if (starsCollected >= targetStars) {
         clearInterval(starSpawnInterval);
+        // 播放完成音效
+        if (typeof playSfxComplete === 'function') playSfxComplete();
         showWishInput();
     }
 }

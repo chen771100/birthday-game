@@ -1,39 +1,82 @@
 /* ========================================
-   關卡二：裝飾蛋糕
+   關卡二：裝飾蛋糕 (重構版)
    ======================================== */
 
 let selectedDeco = null;
 let candleCount = 0;
+let selectedCandleStyle = 'classic';
+let selectedCandleColor = 'pink';
+const MAX_CANDLES = 3; // 蠟燭上限
 
 function initGame2() {
-    setupCakeBase();
+    // 重置狀態
+    candleCount = 0;
+    selectedCandleStyle = 'classic';
+    selectedCandleColor = 'pink';
+    
+    // 重置 gameState 裝飾資料
+    gameState.cake.decorations = [];
+    gameState.cake.candles = [];
+    gameState.cake.message = '';
+    gameState.cake.creamColor = '#FFB6C1';
+    
+    document.getElementById('candle-num').textContent = '0';
+    
+    renderDecorateCake();
     setupCreamColors();
     setupDecorations();
-    setupCandles();
+    setupCandleStyles();
     setupMessage();
     setupFinishButton();
 }
 
-// 設定蛋糕基底
-function setupCakeBase() {
-    const cake = document.getElementById('decorating-cake');
+// 渲染裝飾用蛋糕
+function renderDecorateCake() {
+    const container = document.getElementById('decorating-cake');
+    const { shape, flavor, creamColor } = gameState.cake;
+    
+    container.innerHTML = '';
+    container.className = `decorate-cake shape-${shape}`;
+    
+    // 使用 CakeRenderer 渲染蛋糕主體
+    const cakeBody = CakeRenderer.createCakeBody(shape, flavor, creamColor, {
+        width: 200, height: 120, fontSize: 24, candleHeight: 40, candleWidth: 12
+    });
+    container.appendChild(cakeBody);
+    
+    // 建立裝飾品圖層（可拖曳）
+    const decoLayer = document.createElement('div');
+    decoLayer.id = 'decorations-layer';
+    decoLayer.className = 'cake-decorations-layer';
+    container.appendChild(decoLayer);
+    
+    // 建立蠟燭圖層
+    const candleLayer = document.createElement('div');
+    candleLayer.id = 'candles-layer';
+    candleLayer.className = 'cake-candles-layer';
+    container.appendChild(candleLayer);
+    
+    // 建立文字圖層
+    const msgLayer = document.createElement('div');
+    msgLayer.id = 'message-layer';
+    msgLayer.className = 'cake-message-layer';
+    container.appendChild(msgLayer);
+}
+
+// 更新蛋糕奶油顏色
+function updateCakeColor(creamColor) {
+    gameState.cake.creamColor = creamColor;
+    
+    const container = document.getElementById('decorating-cake');
     const { shape, flavor } = gameState.cake;
     
-    // 口味顏色
-    const colors = {
-        chocolate: '#8B4513',
-        strawberry: '#FFB6C1',
-        vanilla: '#FFF8DC'
-    };
-    
-    cake.style.background = colors[flavor];
-    
-    // 形狀
-    cake.className = '';
-    if (shape === 'circle') {
-        cake.classList.add('circle');
-    } else if (shape === 'heart') {
-        cake.classList.add('heart');
+    // 重新渲染蛋糕主體
+    const oldBody = container.querySelector('.cake-body');
+    if (oldBody) {
+        const newBody = CakeRenderer.createCakeBody(shape, flavor, creamColor, {
+            width: 200, height: 120, fontSize: 24, candleHeight: 40, candleWidth: 12
+        });
+        container.replaceChild(newBody, oldBody);
     }
 }
 
@@ -42,25 +85,36 @@ function setupCreamColors() {
     const creamButtons = document.querySelectorAll('.cream-btn');
     const applyCreamBtn = document.getElementById('apply-cream-btn');
     
+    // 重置按鈕狀態
+    creamButtons.forEach(b => b.classList.remove('active'));
+    creamButtons[0]?.classList.add('active');
+    
     creamButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            creamButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            gameState.cake.creamColor = btn.dataset.cream;
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', () => {
+            document.querySelectorAll('.cream-btn').forEach(b => b.classList.remove('active'));
+            newBtn.classList.add('active');
+            gameState.cake.creamColor = newBtn.dataset.cream;
         });
     });
     
-    applyCreamBtn.addEventListener('click', () => {
-        const cake = document.getElementById('decorating-cake');
+    // 塗抹按鈕
+    const newApplyBtn = applyCreamBtn.cloneNode(true);
+    applyCreamBtn.parentNode.replaceChild(newApplyBtn, applyCreamBtn);
+    
+    newApplyBtn.addEventListener('click', () => {
         const color = gameState.cake.creamColor;
+        updateCakeColor(color);
         
-        // 添加奶油效果
-        cake.style.boxShadow = `inset 0 30px 0 ${color}`;
+        if (typeof playSfxSuccess === 'function') playSfxSuccess();
         
-        // 動畫效果
-        applyCreamBtn.textContent = '已塗抹！✨';
+        newApplyBtn.textContent = '已塗抹！✨';
+        newApplyBtn.disabled = true;
         setTimeout(() => {
-            applyCreamBtn.textContent = '塗抹奶油';
+            newApplyBtn.textContent = '塗抹奶油';
+            newApplyBtn.disabled = false;
         }, 1000);
     });
 }
@@ -68,47 +122,55 @@ function setupCreamColors() {
 // 裝飾品
 function setupDecorations() {
     const decoButtons = document.querySelectorAll('.deco-btn');
-    const decorationsLayer = document.getElementById('decorations-layer');
-    const cakeCanvas = document.getElementById('cake-canvas');
     
     decoButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const deco = btn.dataset.deco;
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', () => {
+            if (typeof playSfxClick === 'function') playSfxClick();
             
-            // 建立裝飾品元素
-            const decoItem = document.createElement('div');
-            decoItem.className = 'decoration-item';
-            decoItem.textContent = deco;
-            
-            // 隨機位置（在蛋糕範圍內）
-            const canvasRect = cakeCanvas.getBoundingClientRect();
-            decoItem.style.left = (100 + Math.random() * 100) + 'px';
-            decoItem.style.top = (80 + Math.random() * 80) + 'px';
-            
-            // 添加拖曳功能
-            makeDraggable(decoItem, decorationsLayer);
-            
-            decorationsLayer.appendChild(decoItem);
-            
-            // 儲存裝飾
-            gameState.cake.decorations.push({
-                type: deco,
-                x: parseInt(decoItem.style.left),
-                y: parseInt(decoItem.style.top)
-            });
+            const deco = newBtn.dataset.deco;
+            addDecoration(deco);
         });
     });
 }
 
-// 使元素可拖曳
-function makeDraggable(element, container) {
+// 添加裝飾品
+function addDecoration(decoType) {
+    const decorationsLayer = document.getElementById('decorations-layer');
+    const decoIndex = gameState.cake.decorations.length;
+    
+    const decoItem = document.createElement('span');
+    decoItem.className = 'cake-deco-item draggable';
+    decoItem.textContent = decoType;
+    decoItem.dataset.index = decoIndex;
+    
+    // 隨機位置
+    const posX = 40 + Math.random() * 120;
+    const posY = 20 + Math.random() * 60;
+    decoItem.style.left = posX + 'px';
+    decoItem.style.top = posY + 'px';
+    
+    // 添加拖曳功能
+    makeDraggable(decoItem, decorationsLayer, decoIndex);
+    
+    decorationsLayer.appendChild(decoItem);
+    
+    // 儲存裝飾
+    gameState.cake.decorations.push({
+        type: decoType,
+        x: posX,
+        y: posY
+    });
+}
+
+// 使元素可拖曳（並同步更新位置）
+function makeDraggable(element, container, decoIndex) {
     let isDragging = false;
     let startX, startY, initialX, initialY;
     
-    element.addEventListener('mousedown', startDrag);
-    element.addEventListener('touchstart', startDrag);
-    
-    function startDrag(e) {
+    const startDrag = (e) => {
         isDragging = true;
         element.style.zIndex = 100;
         
@@ -124,12 +186,9 @@ function makeDraggable(element, container) {
         initialY = element.offsetTop;
         
         e.preventDefault();
-    }
+    };
     
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('touchmove', drag);
-    
-    function drag(e) {
+    const drag = (e) => {
         if (!isDragging) return;
         
         let currentX, currentY;
@@ -146,73 +205,133 @@ function makeDraggable(element, container) {
         
         element.style.left = (initialX + deltaX) + 'px';
         element.style.top = (initialY + deltaY) + 'px';
-    }
+    };
     
-    document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchend', endDrag);
-    
-    function endDrag() {
+    const endDrag = () => {
         if (isDragging) {
             isDragging = false;
             element.style.zIndex = 10;
+            
+            // 更新 gameState 中的位置
+            if (decoIndex !== undefined && gameState.cake.decorations[decoIndex]) {
+                gameState.cake.decorations[decoIndex].x = parseInt(element.style.left);
+                gameState.cake.decorations[decoIndex].y = parseInt(element.style.top);
+            }
         }
-    }
+    };
+    
+    element.addEventListener('mousedown', startDrag);
+    element.addEventListener('touchstart', startDrag, { passive: false });
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, { passive: false });
+    
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
 }
 
-// 蠟燭
-function setupCandles() {
-    const candleButtons = document.querySelectorAll('.candle-btn');
+// 蠟燭樣式選擇
+function setupCandleStyles() {
+    const styleButtons = document.querySelectorAll('.candle-style-btn');
+    const colorButtons = document.querySelectorAll('.candle-btn');
+    
+    // 重置樣式按鈕
+    styleButtons.forEach(b => b.classList.remove('active'));
+    styleButtons[0]?.classList.add('active');
+    
+    // 重置顏色按鈕
+    colorButtons.forEach(b => b.classList.remove('active'));
+    
+    styleButtons.forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', () => {
+            if (typeof playSfxClick === 'function') playSfxClick();
+            document.querySelectorAll('.candle-style-btn').forEach(b => b.classList.remove('active'));
+            newBtn.classList.add('active');
+            selectedCandleStyle = newBtn.dataset.style;
+        });
+    });
+    
+    colorButtons.forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', () => {
+            if (typeof playSfxClick === 'function') playSfxClick();
+            document.querySelectorAll('.candle-btn').forEach(b => b.classList.remove('active'));
+            newBtn.classList.add('active');
+            selectedCandleColor = newBtn.dataset.candle;
+            addCandle();
+        });
+    });
+}
+
+// 添加蠟燭
+function addCandle() {
     const candlesLayer = document.getElementById('candles-layer');
     const candleNumDisplay = document.getElementById('candle-num');
     
-    const candleColors = {
-        pink: 'pink',
-        blue: 'blue',
-        yellow: 'yellow'
-    };
+    if (candleCount >= MAX_CANDLES) {
+        // 提示已達上限
+        candleNumDisplay.style.color = '#e74c3c';
+        candleNumDisplay.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            candleNumDisplay.style.color = '';
+            candleNumDisplay.style.transform = '';
+        }, 300);
+        return;
+    }
     
-    candleButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (candleCount >= 3) return; // 最多3根蠟燭
-            
-            const color = btn.dataset.candle;
-            
-            // 建立蠟燭
-            const candle = document.createElement('div');
-            candle.className = `candle ${candleColors[color]}`;
-            
-            candlesLayer.appendChild(candle);
-            candleCount++;
-            
-            // 置中排列蠟燭的位置
-            const positions = {
-                1: [145],                  // 1根蠟燭置中
-                2: [125, 165],             // 2根蠟燭
-                3: [105, 145, 185]         // 3根蠟燭
-            };
-            
-            // 重新排列所有蠟燭
-            const candleElements = candlesLayer.querySelectorAll('.candle');
-            const currentPositions = positions[candleCount];
-            candleElements.forEach((c, i) => {
-                c.style.left = currentPositions[i] + 'px';
-                c.style.top = '50px';
-            });
-            
-            candleNumDisplay.textContent = candleCount;
-            
-            // 更新儲存的蠟燭資訊（清空並重建）
-            gameState.cake.candles = [];
-            candleElements.forEach((c, i) => {
-                const candleColor = c.classList.contains('pink') ? 'pink' : 
-                                   c.classList.contains('blue') ? 'blue' : 'yellow';
-                gameState.cake.candles.push({
-                    color: candleColor,
-                    x: currentPositions[i],
-                    y: 50
-                });
-            });
-        });
+    // 建立蠟燭
+    const candle = document.createElement('div');
+    candle.className = `cake-candle style-${selectedCandleStyle}`;
+    
+    const colorConfig = CakeRenderer.candleColors[selectedCandleColor] || CakeRenderer.candleColors.pink;
+    candle.style.setProperty('--candle-gradient', colorConfig.gradient);
+    candle.style.setProperty('--candle-stripe', colorConfig.stripe);
+    
+    // 數字蠟燭顯示數字
+    if (selectedCandleStyle === 'number') {
+        candle.textContent = candleCount + 1;
+    }
+    
+    // 火焰
+    const flame = document.createElement('span');
+    flame.className = 'candle-flame';
+    flame.textContent = '🔥';
+    candle.appendChild(flame);
+    
+    candlesLayer.appendChild(candle);
+    candleCount++;
+    
+    // 置中排列蠟燭
+    arrangeCandles();
+    
+    candleNumDisplay.textContent = candleCount;
+    
+    // 更新 gameState
+    gameState.cake.candles.push({
+        color: selectedCandleColor,
+        style: selectedCandleStyle
+    });
+}
+
+// 排列蠟燭（置中）
+function arrangeCandles() {
+    const candlesLayer = document.getElementById('candles-layer');
+    const candles = candlesLayer.querySelectorAll('.cake-candle');
+    
+    const containerWidth = 200;
+    const candleWidth = 12;
+    const spacing = 35;
+    const totalWidth = (candles.length - 1) * spacing;
+    const startX = (containerWidth - totalWidth) / 2 - candleWidth / 2;
+    
+    candles.forEach((candle, i) => {
+        candle.style.left = (startX + i * spacing) + 'px';
+        candle.style.top = '-35px';
     });
 }
 
@@ -222,16 +341,40 @@ function setupMessage() {
     const addMessageBtn = document.getElementById('add-message-btn');
     const messageLayer = document.getElementById('message-layer');
     
-    addMessageBtn.addEventListener('click', () => {
+    // 重置輸入框
+    messageInput.value = '';
+    
+    // 使用克隆替換避免重複綁定
+    const newBtn = addMessageBtn.cloneNode(true);
+    addMessageBtn.parentNode.replaceChild(newBtn, addMessageBtn);
+    
+    newBtn.addEventListener('click', () => {
         const message = messageInput.value.trim();
         if (message) {
             messageLayer.textContent = message;
             gameState.cake.message = message;
             
-            addMessageBtn.textContent = '已添加！✨';
+            newBtn.textContent = '已添加！✨';
+            newBtn.disabled = true;
             setTimeout(() => {
-                addMessageBtn.textContent = '加入文字';
+                newBtn.textContent = '加入文字';
+                newBtn.disabled = false;
             }, 1000);
+        } else {
+            // 提示需要輸入
+            messageInput.style.borderColor = '#e74c3c';
+            messageInput.placeholder = '請輸入祝福語...';
+            setTimeout(() => {
+                messageInput.style.borderColor = '';
+                messageInput.placeholder = '生日快樂！';
+            }, 1500);
+        }
+    });
+    
+    // 按 Enter 也可以加入
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            newBtn.click();
         }
     });
 }
@@ -240,14 +383,15 @@ function setupMessage() {
 function setupFinishButton() {
     const finishBtn = document.getElementById('finish-decorate-btn');
     
-    finishBtn.addEventListener('click', () => {
+    const newBtn = finishBtn.cloneNode(true);
+    finishBtn.parentNode.replaceChild(newBtn, finishBtn);
+    
+    newBtn.addEventListener('click', () => {
         // 確保至少有1根蠟燭
-        if (candleCount === 0) {
-            // 自動添加1根預設蠟燭
+        if (gameState.cake.candles.length === 0) {
             gameState.cake.candles = [
-                { color: 'pink', x: 120, y: 50 }
+                { color: 'pink', style: 'classic' }
             ];
-            candleCount = 1;
         }
         
         showScreen('game3');

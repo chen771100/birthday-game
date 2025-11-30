@@ -1,90 +1,58 @@
 /* ========================================
-   關卡三：吹蠟燭
+   關卡三：吹蠟燭 (重構版)
    ======================================== */
 
 let blowPower = 0;
 let candlesBlown = 0;
 let totalCandles = 0;
 let blowInterval = null;
+let powerDecayInterval = null;
 
 function initGame3() {
-    setupFinalCake();
-    setupCandles();
+    // 重置狀態
+    blowPower = 0;
+    candlesBlown = 0;
+    
+    // 清理舊的定時器
+    if (powerDecayInterval) {
+        clearInterval(powerDecayInterval);
+        powerDecayInterval = null;
+    }
+    
+    renderBlowCake();
     setupBlowing();
 }
 
-// 設定最終蛋糕顯示
-function setupFinalCake() {
-    const cakeDisplay = document.getElementById('final-cake-display');
-    const { shape, flavor, creamColor } = gameState.cake;
-    
-    // 口味顏色
-    const colors = {
-        chocolate: '#8B4513',
-        strawberry: '#FFB6C1',
-        vanilla: '#FFF8DC'
-    };
-    
-    cakeDisplay.style.background = colors[flavor];
-    
-    // 形狀
-    if (shape === 'circle') {
-        cakeDisplay.style.borderRadius = '50% 50% 20px 20px';
-    } else if (shape === 'heart') {
-        cakeDisplay.style.width = '180px';
-        cakeDisplay.style.height = '160px';
-        cakeDisplay.style.borderRadius = '20px';
-        cakeDisplay.style.transform = 'rotate(-45deg)';
-    }
-    
-    // 奶油顏色
-    if (creamColor) {
-        cakeDisplay.style.boxShadow = `inset 0 40px 0 ${creamColor}, 0 10px 30px rgba(0,0,0,0.2)`;
-    }
-}
-
-// 設定蠟燭
-function setupCandles() {
-    const container = document.getElementById('candles-container');
-    container.innerHTML = '';
-    
+// 渲染吹蠟燭畫面的蛋糕
+function renderBlowCake() {
+    const container = document.getElementById('blow-cake-container');
     const candles = gameState.cake.candles;
-    totalCandles = candles.length || 3;
     
-    // 如果沒有蠟燭，建立預設的
+    // 如果沒有蠟燭，加入預設
     if (candles.length === 0) {
-        for (let i = 0; i < 3; i++) {
-            candles.push({ color: 'pink' });
-        }
-        totalCandles = 3;
+        gameState.cake.candles = [{ color: 'pink', style: 'classic' }];
     }
     
-    candles.forEach((candleData, index) => {
-        const candle = document.createElement('div');
-        candle.className = 'blow-candle';
+    totalCandles = gameState.cake.candles.length;
+    
+    // 使用 CakeRenderer 渲染蛋糕（帶蠟燭和火焰）
+    CakeRenderer.render(container, gameState.cake, {
+        size: 'normal',
+        showCandles: true,
+        showFlame: true
+    });
+    
+    // 為蠟燭添加吹熄效果的 class
+    const candleElements = container.querySelectorAll('.cake-candle');
+    candleElements.forEach((candle, index) => {
+        candle.classList.add('blow-candle');
         candle.dataset.index = index;
         
-        // 設定顏色
-        const colorGradients = {
-            pink: 'linear-gradient(to bottom, #FFB6C1, #FF69B4)',
-            blue: 'linear-gradient(to bottom, #87CEEB, #4169E1)',
-            yellow: 'linear-gradient(to bottom, #FFD700, #FFA500)'
-        };
-        candle.style.background = colorGradients[candleData.color] || colorGradients.pink;
-        
-        // 火焰
-        const flame = document.createElement('span');
-        flame.className = 'flame';
-        flame.textContent = '🔥';
-        candle.appendChild(flame);
-        
-        // 煙霧
+        // 添加煙霧元素
         const smoke = document.createElement('span');
-        smoke.className = 'smoke';
+        smoke.className = 'candle-smoke';
         smoke.textContent = '💨';
         candle.appendChild(smoke);
-        
-        container.appendChild(candle);
     });
 }
 
@@ -93,14 +61,19 @@ function setupBlowing() {
     const blowArea = document.getElementById('blow-area');
     const powerFill = document.getElementById('blow-power-fill');
     const hint = document.getElementById('blow-hint');
-    const candles = document.querySelectorAll('.blow-candle');
+    
+    // 重置 UI
+    powerFill.style.width = '0%';
+    hint.textContent = '點擊畫面吹氣！';
+    hint.style.animation = 'pulse 1s infinite';
     
     let isBlowing = false;
     let clickCount = 0;
     let lastClickTime = 0;
+    let holdInterval = null;
     
     // 減少吹力的定時器
-    setInterval(() => {
+    powerDecayInterval = setInterval(() => {
         if (!isBlowing && blowPower > 0) {
             blowPower = Math.max(0, blowPower - 2);
             powerFill.style.width = blowPower + '%';
@@ -109,6 +82,11 @@ function setupBlowing() {
     
     // 點擊/觸控吹氣
     function handleBlow() {
+        if (candlesBlown >= totalCandles) return; // 已完成
+        
+        // 播放吹氣音效
+        if (typeof playSfxBlow === 'function') playSfxBlow();
+        
         const now = Date.now();
         
         // 計算點擊頻率增加吹力
@@ -136,17 +114,28 @@ function setupBlowing() {
     
     // 吹熄下一根蠟燭
     function blowNextCandle() {
-        const unbownCandles = document.querySelectorAll('.blow-candle:not(.blown)');
+        const unblownCandles = document.querySelectorAll('.blow-candle:not(.blown)');
         
-        if (unbownCandles.length > 0) {
-            const candle = unbownCandles[0];
+        if (unblownCandles.length > 0) {
+            const candle = unblownCandles[0];
             candle.classList.add('blown');
             candlesBlown++;
             blowPower = Math.max(0, blowPower - 30);
             powerFill.style.width = blowPower + '%';
             
+            if (typeof playSfxSuccess === 'function') playSfxSuccess();
+            
             // 全部吹熄
             if (candlesBlown >= totalCandles) {
+                if (powerDecayInterval) {
+                    clearInterval(powerDecayInterval);
+                    powerDecayInterval = null;
+                }
+                if (holdInterval) {
+                    clearInterval(holdInterval);
+                    holdInterval = null;
+                }
+                
                 hint.textContent = '🎉 太棒了！蠟燭全部吹熄了！';
                 hint.style.animation = 'none';
                 
@@ -158,35 +147,38 @@ function setupBlowing() {
         }
     }
     
-    // 事件監聽
-    blowArea.addEventListener('click', handleBlow);
-    blowArea.addEventListener('touchstart', (e) => {
+    // 使用克隆替換避免重複綁定事件
+    const newBlowArea = blowArea.cloneNode(true);
+    newBlowArea.innerHTML = blowArea.innerHTML;
+    blowArea.parentNode.replaceChild(newBlowArea, blowArea);
+    
+    const area = document.getElementById('blow-area');
+    
+    area.addEventListener('click', handleBlow);
+    area.addEventListener('touchstart', (e) => {
         e.preventDefault();
         handleBlow();
-    });
+    }, { passive: false });
     
-    // 長按快速吹氣
-    let holdInterval = null;
-    
-    blowArea.addEventListener('mousedown', () => {
+    area.addEventListener('mousedown', () => {
         holdInterval = setInterval(handleBlow, 100);
     });
     
-    blowArea.addEventListener('mouseup', () => {
+    area.addEventListener('mouseup', () => {
         if (holdInterval) {
             clearInterval(holdInterval);
             holdInterval = null;
         }
     });
     
-    blowArea.addEventListener('mouseleave', () => {
+    area.addEventListener('mouseleave', () => {
         if (holdInterval) {
             clearInterval(holdInterval);
             holdInterval = null;
         }
     });
     
-    blowArea.addEventListener('touchend', () => {
+    area.addEventListener('touchend', () => {
         if (holdInterval) {
             clearInterval(holdInterval);
             holdInterval = null;

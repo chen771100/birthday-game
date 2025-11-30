@@ -19,6 +19,9 @@ function setupShapeSelection() {
     
     shapeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
+            // 播放點擊音效
+            if (typeof playSfxClick === 'function') playSfxClick();
+            
             // 移除其他選中狀態
             shapeButtons.forEach(b => b.classList.remove('selected'));
             // 添加選中狀態
@@ -40,6 +43,9 @@ function setupFlavorSelection() {
     
     flavorButtons.forEach(btn => {
         btn.addEventListener('click', () => {
+            // 播放點擊音效
+            if (typeof playSfxClick === 'function') playSfxClick();
+            
             flavorButtons.forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             gameState.cake.flavor = btn.dataset.flavor;
@@ -193,6 +199,9 @@ function setupBaking() {
                 clearInterval(countdown);
                 oven.classList.remove('baking');
                 
+                // 播放完成音效
+                if (typeof playSfxComplete === 'function') playSfxComplete();
+                
                 // 完成！
                 setTimeout(() => {
                     setupFinishedCake();
@@ -220,11 +229,13 @@ function setupFinishedCake() {
     // 形狀
     if (shape === 'circle') {
         preview.style.borderRadius = '50% 50% 20px 20px';
-    } else if (shape === 'heart') {
-        preview.style.width = '120px';
+    } else if (shape === 'peach') {
+        // 壽桃形狀預覽
+        preview.style.width = '100px';
         preview.style.height = '120px';
-        preview.style.borderRadius = '20px';
-        preview.style.transform = 'rotate(-45deg)';
+        preview.style.borderRadius = '50% 50% 50% 50% / 55% 55% 45% 45%';
+        preview.style.background = 'linear-gradient(to bottom, #FF9999, #FF6B6B, #E85555)';
+        preview.style.boxShadow = 'inset -15px -10px 25px rgba(0,0,0,0.2), inset 15px 10px 25px rgba(255,255,255,0.3)';
     }
 }
 

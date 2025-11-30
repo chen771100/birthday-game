@@ -88,6 +88,9 @@ function spawnBalloon() {
 function popBalloon(balloon) {
     if (balloon.classList.contains('popped')) return;
     
+    // 播放爆破音效
+    if (typeof playSfxPop === 'function') playSfxPop();
+    
     balloon.classList.add('popped');
     balloonsCollected++;
     updateBalloonUI();

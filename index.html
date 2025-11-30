@@ -70,9 +70,9 @@
                                 <div class="shape-preview square"></div>
                                 <span>方形</span>
                             </button>
-                            <button class="option-btn" data-shape="heart">
-                                <div class="shape-preview heart"></div>
-                                <span>愛心</span>
+                            <button class="option-btn" data-shape="peach">
+                                <div class="shape-preview peach"></div>
+                                <span>壽桃</span>
                             </button>
                         </div>
                     </div>
@@ -149,9 +149,6 @@
                 <div class="decorate-area">
                     <div id="cake-canvas">
                         <div id="decorating-cake"></div>
-                        <div id="decorations-layer"></div>
-                        <div id="candles-layer"></div>
-                        <div id="message-layer"></div>
                     </div>
                 </div>
                 <div class="tools-panel">
@@ -181,13 +178,23 @@
                         </div>
                     </div>
                     <div class="tool-section">
-                        <h4>蠟燭</h4>
-                        <div class="candle-options">
-                            <button class="candle-btn" data-candle="pink">🕯️</button>
-                            <button class="candle-btn" data-candle="blue">🕯️</button>
-                            <button class="candle-btn" data-candle="yellow">🕯️</button>
+                        <h4>蠟燭樣式</h4>
+                        <div class="candle-style-options">
+                            <button class="candle-style-btn active" data-style="classic">經典</button>
+                            <button class="candle-style-btn" data-style="spiral">螺旋</button>
+                            <button class="candle-style-btn" data-style="star">星星</button>
+                            <button class="candle-style-btn" data-style="number">數字</button>
                         </div>
-                        <p class="candle-count">蠟燭數量：<span id="candle-num">0</span></p>
+                        <h4>蠟燭顏色</h4>
+                        <div class="candle-options">
+                            <button class="candle-btn" data-candle="pink" style="background: linear-gradient(#FFB6C1, #FF69B4)"></button>
+                            <button class="candle-btn" data-candle="blue" style="background: linear-gradient(#87CEEB, #4169E1)"></button>
+                            <button class="candle-btn" data-candle="yellow" style="background: linear-gradient(#FFD700, #FFA500)"></button>
+                            <button class="candle-btn" data-candle="purple" style="background: linear-gradient(#DDA0DD, #9932CC)"></button>
+                            <button class="candle-btn" data-candle="green" style="background: linear-gradient(#98FB98, #32CD32)"></button>
+                            <button class="candle-btn" data-candle="rainbow" style="background: linear-gradient(90deg, red, orange, yellow, green, blue, purple)"></button>
+                        </div>
+                        <p class="candle-count">蠟燭數量：<span id="candle-num">0</span> / 3</p>
                     </div>
                     <div class="tool-section">
                         <h4>祝福文字</h4>
@@ -208,8 +215,7 @@
             <div class="game-container">
                 <p class="instruction">快速點擊螢幕吹熄蠟燭！</p>
                 <div id="blow-area">
-                    <div id="final-cake-display"></div>
-                    <div id="candles-container"></div>
+                    <div id="blow-cake-container"></div>
                 </div>
                 <div class="blow-indicator">
                     <div class="blow-power">
@@ -285,11 +291,7 @@
                 <h2 class="birthday-person"></h2>
                 <p class="from-sender hidden"></p>
                 <div class="final-cake-wrapper">
-                    <div id="final-cake-card">
-                        <div class="final-decorations-layer"></div>
-                        <div class="final-candles-layer"></div>
-                        <div class="final-message-layer"></div>
-                    </div>
+                    <div id="final-cake-container"></div>
                 </div>
                 <div class="wish-display">
                     <p>你的生日願望：</p>
@@ -327,11 +329,7 @@
                 <h2 class="gift-recipient"></h2>
                 <p class="gift-sender"></p>
                 <div class="gift-cake-wrapper">
-                    <div id="gift-cake-display">
-                        <div class="gift-decorations-layer"></div>
-                        <div class="gift-candles-layer"></div>
-                        <div class="gift-message-layer"></div>
-                    </div>
+                    <div id="gift-cake-container"></div>
                 </div>
                 <div class="gift-message-box">
                     <h3>💌 送給你的祝福</h3>
@@ -346,6 +344,8 @@
         </section>
     </div>
 
+    <script src="js/audio.js"></script>
+    <script src="js/cake.js"></script>
     <script src="js/main.js"></script>
     <script src="js/game1.js"></script>
     <script src="js/game2.js"></script>
