@@ -66,10 +66,6 @@
                                 <div class="shape-preview circle"></div>
                                 <span>圓形</span>
                             </button>
-                            <button class="option-btn" data-shape="square">
-                                <div class="shape-preview square"></div>
-                                <span>方形</span>
-                            </button>
                             <button class="option-btn" data-shape="peach">
                                 <div class="shape-preview peach"></div>
                                 <span>壽桃</span>
@@ -139,62 +135,67 @@
             </div>
         </section>
 
-        <!-- 關卡二：裝飾蛋糕 -->
+        <!-- 關卡二：裝飾蛋糕 (Canvas 版本) -->
         <section id="game2-screen" class="screen">
             <div class="game-header">
                 <h2>關卡 2：裝飾蛋糕 🎨</h2>
                 <p class="player-name"></p>
             </div>
             <div class="game-container decorate-container">
-                <div class="decorate-area">
-                    <div id="cake-canvas">
-                        <div id="decorating-cake"></div>
-                    </div>
+                <!-- 蛋糕畫布區 -->
+                <div class="cake-area">
+                    <canvas id="cakeCanvas" width="400" height="450"></canvas>
                 </div>
+                
+                <!-- 工具面板 -->
                 <div class="tools-panel">
+                    <!-- 奶油顏色選擇 -->
                     <div class="tool-section">
                         <h4>奶油顏色</h4>
-                        <div class="cream-colors">
-                            <button class="cream-btn active" data-cream="#FFB6C1" style="background:#FFB6C1"></button>
-                            <button class="cream-btn" data-cream="#FFFFFF" style="background:#FFFFFF"></button>
-                            <button class="cream-btn" data-cream="#87CEEB" style="background:#87CEEB"></button>
-                            <button class="cream-btn" data-cream="#FFD700" style="background:#FFD700"></button>
-                            <button class="cream-btn" data-cream="#98FB98" style="background:#98FB98"></button>
-                            <button class="cream-btn" data-cream="#DDA0DD" style="background:#DDA0DD"></button>
+                        <div class="color-picker cream-colors">
+                            <div class="color-btn cream-color" data-color="#FFFFFF" style="background: #FFFFFF;"></div>
+                            <div class="color-btn cream-color" data-color="#FFB6C1" style="background: #FFB6C1;"></div>
+                            <div class="color-btn cream-color" data-color="#E6E6FA" style="background: #E6E6FA;"></div>
+                            <div class="color-btn cream-color" data-color="#98FB98" style="background: #98FB98;"></div>
+                            <div class="color-btn cream-color" data-color="#87CEFA" style="background: #87CEFA;"></div>
+                            <div class="color-btn cream-color" data-color="#FFEFD5" style="background: #FFEFD5;"></div>
+                            <div class="color-btn cream-color" data-color="#D2691E" style="background: #D2691E;"></div>
+                            <div class="color-btn cream-color" data-color="#FFD700" style="background: #FFD700;"></div>
                         </div>
-                        <button id="apply-cream-btn" class="btn btn-small">塗抹奶油</button>
                     </div>
+                    
+                    <!-- 裝飾品選擇 -->
                     <div class="tool-section">
-                        <h4>裝飾品 <span id="deco-count" class="count-badge">0 / 15</span></h4>
-                        <div class="category-tabs">
-                            <button class="category-btn active" data-category="fruits">🍓 水果</button>
-                            <button class="category-btn" data-category="stars">⭐ 星星</button>
-                            <button class="category-btn" data-category="hearts">💖 愛心</button>
-                            <button class="category-btn" data-category="flowers">🌸 花朵</button>
-                            <button class="category-btn" data-category="misc">🎀 其他</button>
-                        </div>
+                        <h4>裝飾品</h4>
                         <div class="decorations-items">
-                            <!-- 動態生成 -->
+                            <button class="deco-btn" data-deco="strawberry">🍓 草莓</button>
+                            <button class="deco-btn" data-deco="cherry">🍒 櫻桃</button>
+                            <button class="deco-btn" data-deco="blueberry">🫐 藍莓</button>
+                            <button class="deco-btn" data-deco="star">⭐ 星星</button>
+                            <button class="deco-btn" data-deco="heart">❤️ 愛心</button>
+                            <button class="deco-btn" data-deco="flower">🌸 花朵</button>
+                            <button class="deco-btn" data-deco="candy">🍬 糖果</button>
+                            <button class="deco-btn" data-deco="cookie">🍪 餅乾</button>
+                            <button class="deco-btn" data-deco="sprinkles">✨ 糖粒</button>
+                            <button class="deco-btn" data-deco="chocolate">🍫 巧克力</button>
+                            <button class="deco-btn" data-deco="ribbon">🎀 蝴蝶結</button>
                         </div>
-                        <div class="deco-controls">
-                            <div class="control-row">
-                                <button id="undo-btn" class="btn btn-small btn-secondary" title="撤銷 (Ctrl+Z)">↶ 撤銷</button>
-                                <button id="redo-btn" class="btn btn-small btn-secondary" title="重做 (Ctrl+Y)">↷ 重做</button>
-                            </div>
-                            <button id="clear-deco-btn" class="btn btn-small btn-danger">清除所有裝飾</button>
-                            <p class="hint-text">💡 雙擊裝飾品可移除 | Delete鍵刪除選中項</p>
-                            <p class="hint-text">🎯 選中後：+/- 縮放 | [/] 旋轉</p>
+                        <p class="hint-text">💡 選擇裝飾品後，點擊蛋糕放置</p>
+                    </div>
+                    
+                    <!-- 蛋糕層數 -->
+                    <div class="tool-section">
+                        <h4>蛋糕層數</h4>
+                        <div class="layer-btns">
+                            <button class="layer-btn" data-layers="1">1層</button>
+                            <button class="layer-btn" data-layers="2">2層</button>
+                            <button class="layer-btn" data-layers="3">3層</button>
                         </div>
                     </div>
+                    
+                    <!-- 蠟燭 -->
                     <div class="tool-section">
-                        <h4>蠟燭樣式</h4>
-                        <div class="candle-style-options">
-                            <button class="candle-style-btn active" data-style="classic">經典</button>
-                            <button class="candle-style-btn" data-style="spiral">螺旋</button>
-                            <button class="candle-style-btn" data-style="star">星星</button>
-                            <button class="candle-style-btn" data-style="number">數字</button>
-                        </div>
-                        <h4>蠟燭顏色</h4>
+                        <h4>蠟燭 <span class="candle-count">(<span id="candle-num">0</span>/3)</span></h4>
                         <div class="candle-options">
                             <button class="candle-btn" data-candle="pink" style="background: linear-gradient(#FFB6C1, #FF69B4)"></button>
                             <button class="candle-btn" data-candle="blue" style="background: linear-gradient(#87CEEB, #4169E1)"></button>
@@ -203,14 +204,24 @@
                             <button class="candle-btn" data-candle="green" style="background: linear-gradient(#98FB98, #32CD32)"></button>
                             <button class="candle-btn" data-candle="rainbow" style="background: linear-gradient(90deg, red, orange, yellow, green, blue, purple)"></button>
                         </div>
-                        <p class="candle-count">蠟燭數量：<span id="candle-num">0</span> / 3</p>
-                        <p class="hint-text">💡 點擊蠟燭可移除</p>
                     </div>
+                    
+                    <!-- 祝福文字 -->
                     <div class="tool-section">
                         <h4>祝福文字</h4>
                         <input type="text" id="cake-message" placeholder="生日快樂！" maxlength="15">
                         <button id="add-message-btn" class="btn btn-small">加入文字</button>
                     </div>
+                    
+                    <!-- 控制按鈕 -->
+                    <div class="tool-section control-section">
+                        <div class="control-btns">
+                            <button id="undoBtn" class="btn btn-small btn-secondary">↩️ 撤銷</button>
+                            <button id="clearDecoBtn" class="btn btn-small btn-secondary">🧹 清除裝飾</button>
+                            <button id="clearCandleBtn" class="btn btn-small btn-secondary">🕯️ 清除蠟燭</button>
+                        </div>
+                    </div>
+                    
                     <button id="finish-decorate-btn" class="btn btn-primary">完成裝飾 ✨</button>
                 </div>
             </div>

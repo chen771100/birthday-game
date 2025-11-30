@@ -35,11 +35,20 @@ function renderBlowCake() {
     
     totalCandles = gameState.cake.candles.length;
     
-    // 使用 CakeRenderer 渲染蛋糕（帶蠟燭和火焰）
-    CakeRenderer.render(container, gameState.cake, {
+    // 準備無蠟燭版本的蛋糕資料
+    const cakeDataForBlowing = {
+        ...gameState.cake,
+        imageData: gameState.cake.imageDataNoCandles || gameState.cake.imageData  // 使用無蠟燭版本
+    };
+    
+    // 使用 CakeRenderer 渲染蛋糕
+    // 混合模式：使用無蠟燭的 Canvas 圖片 + 疊加 DOM 蠟燭
+    CakeRenderer.render(container, cakeDataForBlowing, {
         size: 'normal',
         showCandles: true,
-        showFlame: true
+        showFlame: true,
+        useImage: true,
+        overlayCandles: true  // 混合模式：圖片 + DOM 蠟燭
     });
     
     // 為蠟燭添加吹熄效果的 class

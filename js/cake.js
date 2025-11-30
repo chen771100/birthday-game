@@ -27,8 +27,8 @@ const CakeRenderer = {
     /**
      * 渲染蛋糕到指定容器
      * @param {HTMLElement} container - 目標容器
-     * @param {Object} cakeData - 蛋糕資料 (shape, flavor, creamColor, decorations, candles, message)
-     * @param {Object} options - 選項 { size: 'normal'|'small', showCandles: true, showFlame: true }
+     * @param {Object} cakeData - 蛋糕資料 (shape, flavor, creamColor, decorations, candles, message, imageData)
+     * @param {Object} options - 選項 { size: 'normal'|'small', showCandles: true, showFlame: true, useImage: true, overlayCandles: false }
      */
     render(container, cakeData, options = {}) {
         const {
@@ -37,26 +37,67 @@ const CakeRenderer = {
             creamColor = '#FFB6C1',
             decorations = [],
             candles = [],
-            message = ''
+            message = '',
+            imageData = null
         } = cakeData;
 
         const {
             size = 'normal',
             showCandles = true,
-            showFlame = true
+            showFlame = true,
+            useImage = true,  // 預設使用圖片（如果有的話）
+            overlayCandles = false  // 混合模式：圖片 + DOM 蠟燭
         } = options;
 
         // 尺寸配置
         const sizeConfig = size === 'small' 
-            ? { width: 160, height: 100, fontSize: 16, candleHeight: 28, candleWidth: 8 }
-            : { width: 200, height: 120, fontSize: 20, candleHeight: 35, candleWidth: 10 };
+            ? { width: 160, height: 180, fontSize: 16, candleHeight: 28, candleWidth: 8 }
+            : { width: 250, height: 280, fontSize: 20, candleHeight: 35, candleWidth: 10 };
 
         // 清空容器
         container.innerHTML = '';
         container.className = 'cake-container';
+        container.style.position = 'relative';
+
+        // 如果有 imageData 且允許使用圖片
+        if (imageData && useImage) {
+            const img = document.createElement('img');
+            img.src = imageData;
+            img.className = 'cake-image';
+            img.style.width = sizeConfig.width + 'px';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+            container.appendChild(img);
+            container.style.width = sizeConfig.width + 'px';
+            
+            // 混合模式：在圖片上疊加 DOM 蠟燭
+            if (overlayCandles && showCandles && candles.length > 0) {
+                const candleLayer = this.createCandlesLayer(candles, sizeConfig, showFlame);
+                candleLayer.style.position = 'absolute';
+                // 根據蛋糕層數計算蠟燭位置
+                // Canvas 尺寸 400x450, baseY=370
+                // 1層: topY = 370-95 = 275, 2層: topY = 370-165 = 205, 3層: topY = 370-225 = 145
+                const layers = cakeData.layers || 2;
+                let topPercent;
+                if (layers === 1) {
+                    topPercent = '42%';  // 275/450 ≈ 61%, 但蠟燭要往上一點
+                } else if (layers === 2) {
+                    topPercent = '28%';  // 205/450 ≈ 46%
+                } else {
+                    topPercent = '15%';  // 145/450 ≈ 32%
+                }
+                candleLayer.style.top = topPercent;
+                candleLayer.style.left = '0';
+                candleLayer.style.width = '100%';
+                container.appendChild(candleLayer);
+            }
+            
+            return container;
+        }
+
+        // 否則使用 DOM 渲染
         container.style.width = sizeConfig.width + 'px';
         container.style.height = (shape === 'peach' ? sizeConfig.height * 1.3 : sizeConfig.height) + 'px';
-        container.style.position = 'relative';
 
         // 建立蛋糕主體
         const cakeElement = this.createCakeBody(shape, flavor, creamColor, sizeConfig);
@@ -129,21 +170,30 @@ const CakeRenderer = {
 
     /**
      * 建立裝飾品圖層
+     * 注意：裝飾品座標是基於 400x450 Canvas 的，需要縮放到目標容器尺寸
      */
     createDecorationsLayer(decorations, sizeConfig) {
         const layer = document.createElement('div');
         layer.className = 'cake-decorations-layer';
 
+        // Canvas 原始尺寸
+        const canvasWidth = 400;
+        const canvasHeight = 450;
+
+        // 計算縮放比例
+        const scaleX = sizeConfig.width / canvasWidth;
+        const scaleY = sizeConfig.height / canvasHeight;
+
         decorations.forEach(deco => {
             const item = document.createElement('span');
             item.className = 'cake-deco-item';
             item.textContent = deco.type;
-            item.style.fontSize = sizeConfig.fontSize + 'px';
-            // 將原始位置轉換為相對位置 (原本基於 300x300 畫布)
-            const relX = (deco.x / 300) * sizeConfig.width;
-            const relY = (deco.y / 300) * sizeConfig.height * 0.8;
-            item.style.left = relX + 'px';
-            item.style.top = relY + 'px';
+            item.style.position = 'absolute';
+            // 縮放座標
+            item.style.left = (deco.x * scaleX) + 'px';
+            item.style.top = (deco.y * scaleY) + 'px';
+            item.style.fontSize = (sizeConfig.fontSize * 1.2) + 'px';
+            item.style.transform = `scale(${deco.scale || 1}) rotate(${deco.rotation || 0}deg)`;
             layer.appendChild(item);
         });
 
@@ -173,11 +223,7 @@ const CakeRenderer = {
             candle.style.width = sizeConfig.candleWidth + 'px';
             candle.style.height = sizeConfig.candleHeight + 'px';
 
-            // 位置
-            candle.style.left = (spacing * (index + 1) - sizeConfig.candleWidth / 2) + 'px';
-            candle.style.top = (-sizeConfig.candleHeight + 5) + 'px';
-
-            // 數字蠟燭顯示數字
+            // 數字蠟燭
             if (style === 'number') {
                 candle.textContent = index + 1;
             }
